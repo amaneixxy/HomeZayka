@@ -345,6 +345,7 @@ export default function MealDetail() {
   const [activeTab, setActiveTab] = useState('Book');
   const [portionCount, setPortionCount] = useState(1);
   const [selectedTime, setSelectedTime] = useState('Today, 12:30');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Form States
   const [customerDetails, setCustomerDetails] = useState({
@@ -486,14 +487,18 @@ export default function MealDetail() {
         {/* LEFT COLUMN: Media & Thumbnails */}
         <div className="space-y-4 lg:sticky lg:top-28">
           <div className="relative rounded-[2rem] overflow-hidden aspect-[16/10] shadow-sm">
-            <img src={meal.images[0]} className="w-full h-full object-cover" alt={meal.title} />
+            <img src={meal.images[currentImageIndex]} className="w-full h-full object-cover" alt={meal.title} />
             <button className="absolute top-5 right-5 w-10 h-10 bg-white rounded-full flex items-center justify-center text-dark shadow-md hover:scale-110 transition-transform">
               <i className="far fa-heart"></i>
             </button>
           </div>
           <div className="flex gap-3">
             {meal.images.map((img, idx) => (
-              <div key={idx} className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === 0 ? 'border-mustard' : 'border-transparent opacity-60'}`}>
+              <div 
+                key={idx} 
+                onClick={() => setCurrentImageIndex(idx)}
+                className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === currentImageIndex ? 'border-mustard' : 'border-transparent opacity-60 hover:opacity-100'}`}
+              >
                 <img src={img} className="w-full h-full object-cover" alt="" />
               </div>
             ))}
