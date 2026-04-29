@@ -510,7 +510,14 @@ export default function MealDetail() {
           <header>
             <div className="flex items-center justify-between mb-1">
               <h1 className="font-display text-4xl text-dark">{meal.title}</h1>
-              <button className="text-gray-text hover:text-dark">
+              <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Meal link copied to clipboard!');
+                }}
+                className="text-gray-text hover:text-dark"
+                title="Share this meal"
+              >
                 <i className="fas fa-share-alt"></i>
               </button>
             </div>
@@ -534,7 +541,10 @@ export default function MealDetail() {
                   </p>
                 </div>
               </div>
-              <button className="px-4 py-2 rounded-full border border-dark/10 text-xs font-bold hover:bg-warm-white flex items-center gap-2">
+              <button 
+                onClick={() => alert(`Messaging ${cook?.name} functionality coming soon!`)}
+                className="px-4 py-2 rounded-full border border-dark/10 text-xs font-bold hover:bg-warm-white flex items-center gap-2"
+              >
                 <i className="far fa-comment-dots"></i> Message
               </button>
             </div>
