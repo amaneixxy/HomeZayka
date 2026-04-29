@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import MealCard from '../Components/MealCard';
+import EditProfileModal from '../Components/EditProfileModal';
 
 export default function CookProfile() {
   const { id } = useParams();
-  const { users, meals } = useApp();
+  const { users, meals, currentUser } = useApp();
   const [activeTab, setActiveTab] = useState('Meals');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  // Find the cook from our data
-  const cook = users.find(u => u.id === id);
+  // Find the cook from our data, or use currentUser if they are viewing their own profile
+  const cook = (currentUser?.id === id) ? currentUser : users.find(u => u.id === id);
   const cookMeals = meals.filter(m => m.cookId === id);
 
   if (!cook) return <div className="pt-32 text-center">Cook not found</div>;
@@ -85,9 +87,14 @@ export default function CookProfile() {
                   </div>
                 </div>
 
-                <button className="w-full border border-dark/10 py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-warm-white transition-all">
-                  <i className="fas fa-edit"></i> Edit Profile
-                </button>
+                {currentUser?.id === cook.id && (
+                  <button 
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="w-full border border-dark/10 py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-warm-white transition-all"
+                  >
+                    <i className="fas fa-edit"></i> Edit Profile
+                  </button>
+                )}
               </div>
             </div>
           </aside>
@@ -146,6 +153,12 @@ export default function CookProfile() {
 
         </div>
       </div>
+      
+      <EditProfileModal 
+        isOpen={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
+        user={cook} 
+      />
     </main>
   );
 }
