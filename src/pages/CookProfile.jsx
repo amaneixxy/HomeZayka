@@ -74,16 +74,16 @@ export default function CookProfile() {
                 {/* Contact Info */}
                 <div className="space-y-4 mb-8">
                   <div className="flex items-center gap-3 text-sm text-gray-text">
-                    <i className="fas fa-map-marker-alt w-5"></i>
-                    <span>{cook.address}</span>
+                    <i className="fas fa-map-marker-alt w-5 text-center"></i>
+                    <span>{cook.address || 'Address not provided'}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm text-gray-text">
-                    <i className="fas fa-envelope w-5"></i>
-                    <span>{cook.email}</span>
+                    <i className="fas fa-envelope w-5 text-center"></i>
+                    <span>{cook.email || 'Email not provided'}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm text-gray-text">
-                    <i className="fas fa-phone w-5"></i>
-                    <span>+91-98765-43203</span>
+                    <i className="fas fa-phone w-5 text-center"></i>
+                    <span>{cook.phone || 'Phone not provided'}</span>
                   </div>
                 </div>
 

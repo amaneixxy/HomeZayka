@@ -352,14 +352,29 @@ export default function MealDetail() {
     phone: '',
     notes: ''
   });
+  const [errors, setErrors] = useState({});
 
   const meal = meals.find(m => m.id === id);
   const cook = meal ? getCookById(meal.cookId) : null;
 
   if (!meal) return <div className="pt-32 text-center font-display text-2xl text-dark">Meal not found</div>;
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!customerDetails.fullName.trim() || customerDetails.fullName.length < 2) {
+      newErrors.fullName = 'Please enter a valid name (min 2 chars)';
+    }
+    if (!customerDetails.phone || !/^[0-9]{10}$/.test(customerDetails.phone)) {
+      newErrors.phone = 'Please enter a valid 10-digit phone number';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleFinalConfirm = (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+    
     // Here you would typically save the order to your context/database
     alert(`Order for ${meal.title} placed successfully!`);
     navigate('/my-orders');
@@ -382,35 +397,46 @@ export default function MealDetail() {
             <p className="text-gray-text">Finalize your order for <span className="text-dark font-bold">{meal.title}</span></p>
           </div>
 
-          <form onSubmit={handleFinalConfirm} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-dark px-1">Full Name</label>
+          <form onSubmit={handleFinalConfirm} className="space-y-6" noValidate>
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-dark px-1">Full Name <span className="text-tomato">*</span></label>
               <div className="relative">
                 <i className="fas fa-user absolute left-5 top-1/2 -translate-y-1/2 text-gray-text"></i>
                 <input 
                   type="text" 
-                  required
                   placeholder="Enter your name"
-                  className="w-full pl-14 pr-6 py-4 rounded-2xl bg-warm-white/50 border-none focus:ring-2 focus:ring-mustard outline-none transition-all"
+                  className={`w-full pl-14 pr-6 py-4 rounded-2xl bg-warm-white/50 border outline-none transition-all ${
+                    errors.fullName ? 'border-tomato/50 focus:border-tomato focus:ring-1 focus:ring-tomato/20' : 'border-transparent focus:border-mustard focus:ring-2 focus:ring-mustard/20'
+                  }`}
                   value={customerDetails.fullName}
-                  onChange={(e) => setCustomerDetails({...customerDetails, fullName: e.target.value})}
+                  onChange={(e) => {
+                    setCustomerDetails({...customerDetails, fullName: e.target.value});
+                    if (errors.fullName) setErrors({...errors, fullName: null});
+                  }}
                 />
               </div>
+              {errors.fullName && <p className="text-xs text-tomato px-1">{errors.fullName}</p>}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-dark px-1">Phone Number</label>
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-dark px-1">Phone Number <span className="text-tomato">*</span></label>
               <div className="relative">
                 <i className="fas fa-phone absolute left-5 top-1/2 -translate-y-1/2 text-gray-text"></i>
                 <input 
                   type="tel" 
-                  required
-                  placeholder="+91 XXXXX XXXXX"
-                  className="w-full pl-14 pr-6 py-4 rounded-2xl bg-warm-white/50 border-none focus:ring-2 focus:ring-mustard outline-none transition-all"
+                  maxLength="10"
+                  placeholder="e.g. 9876543210"
+                  className={`w-full pl-14 pr-6 py-4 rounded-2xl bg-warm-white/50 border outline-none transition-all ${
+                    errors.phone ? 'border-tomato/50 focus:border-tomato focus:ring-1 focus:ring-tomato/20' : 'border-transparent focus:border-mustard focus:ring-2 focus:ring-mustard/20'
+                  }`}
                   value={customerDetails.phone}
-                  onChange={(e) => setCustomerDetails({...customerDetails, phone: e.target.value})}
+                  onChange={(e) => {
+                    setCustomerDetails({...customerDetails, phone: e.target.value});
+                    if (errors.phone) setErrors({...errors, phone: null});
+                  }}
                 />
               </div>
+              {errors.phone && <p className="text-xs text-tomato px-1">{errors.phone}</p>}
             </div>
 
             <div className="space-y-2">

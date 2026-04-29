@@ -6,6 +6,7 @@ import logo from '../assets/logo.jpg';
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useApp();
@@ -68,24 +69,60 @@ const scrollToSection = (id) => {
         {/* Desktop Buttons */}
         <div className="flex items-center gap-4">
           {currentUser ? (
-            <div className="flex items-center gap-3">
-              <Link 
-                to={currentUser.role === 'cook' ? '/dashboard' : '/user-dashboard'} 
-                className="w-10 h-10 rounded-full overflow-hidden border-2 border-mustard hover:scale-105 transition-transform"
-              >
-                <img 
-                  src={currentUser.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400'} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover" 
-                />
-              </Link>
-              <button 
-                onClick={handleLogout}
-                className="w-10 h-10 rounded-full bg-warm-white flex items-center justify-center border border-dark/10 hover:bg-mustard hover:text-dark hover:border-mustard transition-all text-dark/70"
-                title="Logout"
-              >
-                <i className="fas fa-sign-out-alt"></i>
-              </button>
+            <div className="relative">
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-mustard hover:scale-105 transition-transform cursor-pointer focus:outline-none"
+                >
+                  <img 
+                    src={currentUser.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400'} 
+                    alt="Profile" 
+                    className="w-full h-full object-cover" 
+                  />
+                </button>
+              </div>
+
+              {/* Profile Dropdown */}
+              {isProfileDropdownOpen && (
+                <div className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-lg border border-dark/5 py-2 overflow-hidden z-[100]">
+                  <Link 
+                    to={currentUser.role === 'cook' ? '/dashboard' : '/user-dashboard'} 
+                    onClick={() => setIsProfileDropdownOpen(false)}
+                    className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-dark hover:bg-warm-white transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-mustard/10 flex items-center justify-center text-mustard">
+                      <i className="fas fa-columns"></i>
+                    </div>
+                    Dashboard
+                  </Link>
+                  {currentUser.role === 'cook' && (
+                    <Link 
+                      to={`/cooks/${currentUser.id}`} 
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                      className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-dark hover:bg-warm-white transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-basil/10 flex items-center justify-center text-basil">
+                        <i className="fas fa-user"></i>
+                      </div>
+                      My Public Profile
+                    </Link>
+                  )}
+                  <div className="h-[1px] bg-dark/5 my-1 mx-4"></div>
+                  <button 
+                    onClick={() => {
+                      setIsProfileDropdownOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full flex items-center gap-3 text-left px-5 py-3 text-sm font-medium text-tomato hover:bg-tomato/5 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-tomato/10 flex items-center justify-center">
+                      <i className="fas fa-sign-out-alt"></i>
+                    </div>
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <Link 
